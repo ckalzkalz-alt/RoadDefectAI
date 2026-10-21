@@ -1,0 +1,18 @@
+# Training environment (never commit)
+.venv/
+__pycache__/
+*.pyc
+
+# Generated dataset (recreate with convert_rdd_to_yolo.py)
+dataset/
+
+# Training outputs
+runs/
+predictions/
+*.pt
+*.onnx
+*.tflite
+
+# Real dataset copy (never commit - use the RDD2022 release)
+RDD2022_released_through_CRDDC2022/
+*_MotorBike/

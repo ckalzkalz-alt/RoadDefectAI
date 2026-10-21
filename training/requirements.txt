@@ -1,0 +1,14 @@
+# RoadDefectAI training pipeline
+# Torch (CUDA) is installed separately from the PyTorch CUDA index, see install.ps1
+ultralytics>=8.3.0
+onnx>=1.16.0
+onnxslim>=0.1.27
+# --- TFLite export (used by export_tflite.py) ---
+# Ultralytics >= 8.4.83 replaced format='tflite' with a LiteRT export that only runs
+# on Linux/macOS, so on Windows we export ONNX then convert with onnx2tf ourselves.
+onnx2tf>=1.26.0
+onnx-graphsurgeon>=0.5.0
+sng4onnx>=1.0.0
+tf_keras>=2.16.0
+ai-edge-litert>=2.0.0
+# tensorflow is installed as a dependency of onnx2tf (CPU is sufficient for conversion)

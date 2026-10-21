@@ -1,0 +1,25 @@
+*.iml
+.gradle/
+local.properties
+**/.idea/
+/build/
+/app/build/
+.DS_Store
+
+# Kotlin / Android
+.kotlin/
+captures/
+*.apk
+*.aab
+*.keystore
+!debug.keystore
+
+# Datasets (large - obtain from the RDD2022 release)
+RDD2022_released_through_CRDDC2022/
+RDD2022_released_through_CRDDC2022.zip
+*.zip
+
+# Python (training/ has its own .gitignore too)
+__pycache__/
+*.pyc
+.venv/
