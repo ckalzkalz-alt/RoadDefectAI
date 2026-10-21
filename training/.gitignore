@@ -9,6 +9,7 @@ dataset/
 # Training outputs
 runs/
 predictions/
+validation_video/
 *.pt
 *.onnx
 *.tflite
@@ -16,3 +17,7 @@ predictions/
 # Real dataset copy (never commit - use the RDD2022 release)
 RDD2022_released_through_CRDDC2022/
 *_MotorBike/
+
+# Field-video analysis output (images are large; FINDINGS.md is kept)
+field_analysis/*.jpg
+field_analysis/hits/

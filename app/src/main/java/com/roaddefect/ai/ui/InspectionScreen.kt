@@ -198,7 +198,7 @@ private fun HoldToStopButton(enabled: Boolean, onConfirm: () -> Unit, modifier: 
 }
 
 @Composable
-private fun DetectionOverlay(boxes: List<OverlayBox>, modifier: Modifier) {
+internal fun DetectionOverlay(boxes: List<OverlayBox>, modifier: Modifier) {
     val measurer = rememberTextMeasurer()
     Canvas(modifier) {
         for (b in boxes) {

@@ -17,6 +17,7 @@ object Routes {
     const val INSPECTION = "inspection"
     const val HISTORY = "history"
     const val SETTINGS = "settings"
+    const val VIDEO = "video"
     const val SUMMARY = "summary/{id}"
     const val MAP = "map/{id}"
     fun summary(id: Long) = "summary/$id"
@@ -39,6 +40,7 @@ fun AppNav(c: AppContainer) {
                 onReturnToInspection = { nav.navigate(Routes.INSPECTION) },
                 onHistory = { nav.navigate(Routes.HISTORY) },
                 onSettings = { nav.navigate(Routes.SETTINGS) },
+                onValidateVideo = { nav.navigate(Routes.VIDEO) },
             )
         }
         composable(Routes.SETUP) {
@@ -67,5 +69,6 @@ fun AppNav(c: AppContainer) {
             MapScreen(c, id, onBack = { nav.popBackStack() })
         }
         composable(Routes.SETTINGS) { SettingsScreen(c, onBack = { nav.popBackStack() }) }
+        composable(Routes.VIDEO) { VideoValidationScreen(c, onBack = { nav.popBackStack() }) }
     }
 }

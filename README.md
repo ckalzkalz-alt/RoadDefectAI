@@ -57,6 +57,7 @@ Future categories (rutting, edge breaks, …) are added to `DefectType` and the 
 - **Lifecycle.** CameraX stops when the app is backgrounded, so the inspection is **auto-paused** (clearly flagged) rather than silently recording nothing. If the process is killed mid-inspection it is marked INTERRUPTED with data kept. Rotation is handled in-place (no camera restart); a 180° flip does not trigger a configuration change and is not re-applied until the next one.
 - **Storage.** One downscaled JPEG (≤1280 px, quality 80) per defect, written atomically. Rejected detections are kept (status REJECTED) but excluded from totals and the map.
 - **Cloud-ready.** Rows carry a `uuid` and `syncState`; nothing uploads yet.
+- **Video validation.** Home → **Validate from video** runs the trained detector over a video file. It is detection validation **only**: it bypasses the inspection pipeline entirely, so no GPS is read, nothing is written to Inspection History, and the tracker is not involved. Results are sampled by video time, making them reproducible. Because a source frame is analysed once per sampling interval, the run total is a *frame-level* count, not a per-object count. See [training/README.md](training/README.md) for how it is checked against an independent reference.
 - Permissions: camera, fine/coarse location, internet (map tiles). No motion-sensor permission is required.
 
 ## Known limitations / next steps

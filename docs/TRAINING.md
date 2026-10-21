@@ -150,6 +150,42 @@ mAP50 of ~0.27, because every duplicate anchor of an already-matched object coun
 false positive. `eval_tflite.py` applies it (`--nms-iou`, default 0.5 = what the app
 does; Ultralytics uses 0.7 and gives ~0.893).
 
+### Validating detection on-device, from a video
+
+`eval_tflite.py` scores the model file. To confirm the *app's own path* works — decode →
+preprocessing → TFLite → box decode → overlay — use the app's **Home → Validate from video**
+screen against a clip with known ground truth:
+
+```powershell
+.\.venv\Scripts\python.exe make_validation_video.py --limit 30   # 30 s clip, 78 known boxes
+.\.venv\Scripts\python.exe verify_video_run.py --limit 30        # reference expectation
+adb push validation_video\rdd_val_clip.mp4 /sdcard/Movies/
+```
+
+That screen intentionally does **not** go through `InspectionController`. Its `DefectTracker` and
+`InferenceThrottle` both reason about elapsed wall-clock time, so video frames would make defect
+confirmation fire spuriously or never — a clock failure that presents as a detector failure. It would
+also persist every confirmed defect with GPS coordinates and a saved image, which a video cannot
+supply. Driving `RoadDefectDetector` directly measures exactly detection and nothing else.
+
+Sampling is by *video* time, so a run is reproducible. Each source image held for a full interval is
+analysed more than once, so the run total is a frame-level count (2× per image at a 1 s hold and
+500 ms interval), not a per-object count.
+
+Measured 2026-10 (30 val images):
+
+| class | GT | per image | reference expected | app reported |
+|---|---|---|---|---|
+| pothole | 8 | 8 | 16 | 16 |
+| longitudinal_crack | 33 | 41 | 82 | 83 |
+| transverse_crack | 26 | 26 | 52 | 56 |
+| alligator_crack | 11 | 12 | 24 | 24 |
+| **all** | **78** | **87** | **174** | **179** |
+
+2.9% agreement with an independent implementation of the same model; the deltas are
+`getFrameAtTime` landing on a neighbouring frame. This validates detection, **not** GPS, distance,
+routing, persistence or tracker confirmation — those still need a real drive.
+
 Other checks:
 
 1. Watch the training curves — `transverse_crack` is weakest at high IoU (0.465).
@@ -184,7 +220,10 @@ powershell -ExecutionPolicy Bypass -File training\run_all.ps1
 - **Test set is unlabelled**, so it cannot give an mAP — use it for visual QA only.
   The reported metrics come from the 15 % validation split held out from `train/`.
 - **Domain** — this is motorcycle-mounted imagery from China; performance on other
-  viewpoints/roads will differ. Nothing here has been measured on a real drive.
+  viewpoints/roads will differ. Detection has now been confirmed on-device against a
+  known-ground-truth clip (see "Validating detection on-device, from a video"), but that clip is
+  built from this same dataset. **Nothing has been measured on a real drive**, and a phone camera's
+  lens, height and angle differ from RDD2022's motorcycle mount — that difference is unmeasured.
 
 ## Files
 
@@ -195,6 +234,12 @@ powershell -ExecutionPolicy Bypass -File training\run_all.ps1
 | `training/export_tflite.py` | TFLite export + verification + copy to app assets |
 | `training/eval_tflite.py` | mAP of the exported TFLite on the val split (app-identical post-processing) |
 | `training/predict_tflite.py` | Runs the exported TFLite over images (app-identical decode + ONNX fidelity check) |
+| `training/make_validation_video.py` | Builds a test clip with known ground truth from the val split |
+| `training/verify_video_run.py` | Reference expectation for the app's "Validate from video" totals |
+| `training/inspect_field_video.py` | Framing/sharpness/brightness of a field video + contact sheet |
+| `training/scan_field_video.py` | Runs the model over sampled frames of a field video (app decode path) |
+| `training/make_field_clip.py` | Cuts a short clip from a long field video for the app |
+| `training/compare_resize_modes.py` | Stretch vs aspect-preserving letterbox, on real frames |
 | `training/run_all.ps1` | convert → train → export → evaluate in one command |
 | `training/install.ps1` | One-shot venv + deps setup |
 | `training/requirements.txt` | Extra Python deps |

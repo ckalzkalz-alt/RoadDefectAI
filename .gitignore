@@ -19,6 +19,12 @@ RDD2022_released_through_CRDDC2022/
 RDD2022_released_through_CRDDC2022.zip
 *.zip
 
+# Field footage (large; keep locally, never commit)
+VIDEO/
+*.MOV
+*.mov
+*.mp4
+
 # Python (training/ has its own .gitignore too)
 __pycache__/
 *.pyc

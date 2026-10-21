@@ -33,6 +33,7 @@ fun HomeScreen(
     onReturnToInspection: () -> Unit,
     onHistory: () -> Unit,
     onSettings: () -> Unit,
+    onValidateVideo: () -> Unit,
 ) {
     val state by c.controller.state.collectAsState()
     val mock = c.activeDetectorIsMock
@@ -66,6 +67,7 @@ fun HomeScreen(
             }
         }
         OutlinedButton(onClick = onHistory, modifier = Modifier.fillMaxWidth().height(56.dp)) { Text("Inspection History") }
+        OutlinedButton(onClick = onValidateVideo, modifier = Modifier.fillMaxWidth().height(56.dp)) { Text("Validate from video") }
         OutlinedButton(onClick = onSettings, modifier = Modifier.fillMaxWidth().height(56.dp)) { Text("Settings") }
 
         Spacer(Modifier.height(8.dp))
